@@ -46,7 +46,8 @@ def login():
                     user = User()
                     user.id = username
                     login_user(user)
-                    return jsonify({'code': 200, 'status': 'yes', 'msg': '管理员登录成功'})
+                    token = user1.generate_auth_token()
+                    return jsonify({'code': 200, 'status': 'yes', 'msg': '管理员登录成功','token':str(token)})
                 else:
                     return jsonify({'code': 200, 'status': 'no', 'msg': '密码错误'})
         # 比对数据库

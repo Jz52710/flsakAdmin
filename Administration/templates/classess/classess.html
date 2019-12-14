@@ -17,6 +17,7 @@
     </div>
     <button type="submit" class="btn btn-success">查询</button>
 </form>
+<!--表-->
 <table class="table table-bordered table-striped">
     <tr>
         <th>序号</th>
@@ -44,6 +45,7 @@
 </form>
 </body>
 <script>
+
     $("[type=submit]").click(function(){
         //    验证
         $.ajax({
@@ -93,31 +95,28 @@
                 `).appendTo($("table tbody"))
             }
             for(let i=1;i<=e.pagenum;i++){
-                $(`<button class="btn btn-default">${i}</button>`).appendTo($("#page"))
+                $(`<button class="btn btn-default ye">${i}</button>`).appendTo($("#page"))
             }
         }
     });
 
     //翻页
-    $(".pageBox").attr("index",1)
-    $("#prev").hide()
-//下一页
+    $(".pageBox").attr("index",1);
+    $("#prev").hide();
+    //下一页
     $("#next").click(function(){
-        let num = Number($(".pageBox").attr('index')) +1
-        console.log(num)
-        $(".pageBox").attr('index',num)
-        if(num>=2){
+        let num = Number($(".pageBox").attr('index')) +1;
+        $(".pageBox").attr('index',num);
+        if(num>=num){
             $("#prev").show()
         }
-        if(num==num){
-            $("#next").hide()
-        }
+
         $.ajax({
             url:"/api/classess/"+num+"/3",
             type:"get",
             success:function(e){
-                $('table').attr("num",e.data.length)
-                $("table tbody").html("")
+                $('table').attr("num",e.data.length);
+                $("table tbody").html("");
                 for(let i in e.data){
                     $(`
                     <tr>
@@ -132,20 +131,23 @@
                     </tr>
                 `).appendTo($("table tbody"))
                 }
-                $("#page").html("")
+                $("#page").html("");
                 for(let i=1;i<=e.pagenum;i++){
-                    $(`<button class="btn btn-default">${i}</button>`).appendTo($("#page"))
+                    $(`<button class="btn btn-default ye">${i}</button>`).appendTo($("#page"))
+                }
+                if(num==e.pagenum){
+                    $("#next").hide()
                 }
             }
         })
 
-    })
-//    上一页
+    });
+    //上一页
     $("#prev").click(function(){
         let num = Number($(".pageBox").attr('index')) -1
         if(num==1){
             $("#prev").hide()
-            $("#next").show()
+            $('#next').show()
         }
         $(".pageBox").attr('index',num)
 
@@ -171,16 +173,19 @@
                 }
                 $("#page").html("")
                 for(let i=1;i<=e.pagenum;i++){
-                    $(`<button class="btn btn-default">${i}</button>`).appendTo($("#page"))
+                    $(`<button class="btn btn-default ye">${i}</button>`).appendTo($("#page"))
+                }
+                if(num>1 && num<=e.pagenum){
+                    $("#next").show()
                 }
             }
         })
 
-    })
+    });
     // 删除
     $('table').click(function (e) {
         let target = $(e.target);
-        console.log(target.parents("tr").children('td').eq(0).attr("sid"))
+        console.log(target.parents("tr").children('td').eq(0).attr("sid"));
         if (target.hasClass("del")){
             //删除
             $.ajax({
@@ -199,6 +204,44 @@
         }else if(target.hasClass('edit')){
             //修改
         }
+    });
+    //选择页面
+    $(".pageBox").click(function (e) {
+        let target = $(e.target);
+        if(target.hasClass("ye")){
+            let num = target.text()
+            $.ajax({
+                url:"/api/classess/"+num+"/3",
+                type:"get",
+                success:function(e){
+                    $('table').attr("num",e.data.length)
+                    $("table tbody").html("")
+                    for(let i in e.data){
+                        $(`
+                    <tr>
+                        <td class="id" sid="${i}">${ Number(i)+1}</td>
+                        <td class="username">${e.data[i].username}</td>
+                        <td class="ctime">${e.data[i].ctime}</td>
+                        <td class="utime">${e.data[i].utime}</td>
+                        <td>
+                            <button class="btn btn-success edit">编辑</button>
+                            <button class="btn btn-danger del">删除</button>
+                        </td>
+                    </tr>
+                `).appendTo($("table tbody"))
+                    }
+                    $("#page").html("")
+                    for(let i=1;i<=e.pagenum;i++){
+                        $(`<button class="btn btn-default ye">${i}</button>`).appendTo($("#page"))
+                    }
+                    if(num>1 && num<e.pagenum){
+                        $("#next").show()
+                    }
+                }
+            })
+        }
+
+
     })
 </script>
 </html>
